@@ -1,9 +1,13 @@
-function AnalyzeButton() {
+function AnalyzeButton({
+  handleAnalyze
+}) {
   return (
     <div>
       <br />
 
-      <button>
+      <button
+        onClick={handleAnalyze}
+      >
         Analyze
       </button>
     </div>

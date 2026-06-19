@@ -1,4 +1,4 @@
-function RoleSelector() {
+function RoleSelector({ role, setRole }) {
   return (
     <div>
       <label>Select Role:</label>
@@ -6,10 +6,19 @@ function RoleSelector() {
       <br />
       <br />
 
-      <select>
-        <option>SDE</option>
-        <option>Java Developer</option>
-        <option>Frontend Developer</option>
+      <select
+        value={role}
+        onChange={(e) => setRole(e.target.value)}
+      >
+        <option value="SDE">SDE</option>
+
+        <option value="Java Developer">
+          Java Developer
+        </option>
+
+        <option value="Frontend Developer">
+          Frontend Developer
+        </option>
       </select>
     </div>
   );
