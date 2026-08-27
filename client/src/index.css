@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base { body { @apply min-h-screen bg-slate-950 text-slate-300 antialiased; background-image: radial-gradient(circle at 85% 10%, rgba(34,211,238,.08), transparent 30rem), linear-gradient(135deg, #020617 0%, #0b1120 55%, #111827 100%); font-family: 'DM Sans', sans-serif; } }
+@layer components {
+  .field-label { @apply mb-2 block text-sm font-medium text-slate-200; }
+  .field-input { @apply w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-cyan-300/70 focus:ring-2 focus:ring-cyan-300/10; }
+  .surface { @apply rounded-xl border border-white/10 bg-white/[.045] p-6 shadow-2xl shadow-black/10 backdrop-blur-sm; }
+  .upload-zone { @apply flex min-h-40 w-full flex-col items-center justify-center rounded-lg border border-dashed border-white/20 bg-slate-950/40 px-5 text-center transition hover:border-cyan-300/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70; }
+  .primary-button { @apply flex w-full items-center justify-center gap-3 rounded-lg bg-gradient-to-r from-cyan-300 to-blue-400 px-5 py-3.5 font-semibold text-slate-950 transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 disabled:cursor-not-allowed disabled:opacity-40; }
+  .secondary-button { @apply inline-flex items-center justify-center rounded-lg border border-white/15 px-4 py-2.5 text-sm text-slate-200 transition hover:border-cyan-300/60 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70; }
+  .total-time { @apply flex items-center justify-between rounded-lg border border-cyan-300/20 bg-cyan-300/[.07] px-4 py-4; }
+  .total-time strong { @apply mt-1 block text-2xl font-semibold text-white; }
+  .error-text { @apply mt-2 text-sm text-rose-300; }
+  .eyebrow { @apply mb-4 text-xs font-semibold uppercase tracking-[.2em] text-cyan-300/80; }
+  .page-title { @apply font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl; }
+  .page-copy { @apply mt-4 max-w-xl text-base leading-7 text-slate-400; }
+  .section-title { @apply font-display text-xl font-semibold text-white; }
+  .section-copy { @apply mt-1 text-sm text-slate-500; }
+  .metric { @apply rounded-xl border border-white/10 bg-white/[.035] p-5; }
+  .metric span { @apply text-xs uppercase tracking-widest text-slate-500; }
+  .metric strong { @apply mt-2 block font-display text-2xl text-white; }
+  .mini-heading { @apply text-xs font-semibold uppercase tracking-widest text-slate-500; }
+  .tag-list { @apply mt-3 leading-8 text-sm text-slate-300; }
+  .roadmap-item { @apply flex items-center gap-4 border-b border-white/10 pb-4 last:border-0 last:pb-0; }
+  .day-number { @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cyan-300/10 text-sm font-semibold text-cyan-200; }
+}
+.font-display { font-family: 'Space Grotesk', sans-serif; }
