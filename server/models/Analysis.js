@@ -6,6 +6,8 @@ const resumeSchema = new mongoose.Schema({
   fileSize: { type: Number, required: true, min: 1 },
   textLength: { type: Number, required: true, min: 1 },
   text: { type: String, required: true, trim: true },
+  usedOcr: { type: Boolean, default: false },
+  wasTruncated: { type: Boolean, default: false },
 }, { _id: false })
 
 const analysisSchema = new mongoose.Schema({

@@ -1,11 +1,14 @@
 import { z } from 'zod'
+import { MAX_RESUME_TEXT_LENGTH } from './aiExtractionSchemas.js'
 
 const resumeSchema = z.object({
   fileName: z.string().min(1),
   fileType: z.enum(['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']),
   fileSize: z.number().int().positive(),
-  textLength: z.number().int().positive(),
-  text: z.string().trim().min(1),
+  textLength: z.number().int().positive().max(MAX_RESUME_TEXT_LENGTH),
+  text: z.string().trim().min(1).max(MAX_RESUME_TEXT_LENGTH),
+  usedOcr: z.boolean().optional().default(false),
+  wasTruncated: z.boolean().optional().default(false),
 })
 
 export const analysisSchema = z.object({

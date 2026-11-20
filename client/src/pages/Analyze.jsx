@@ -6,11 +6,9 @@ import ResumeUpload from '../components/ResumeUpload'
 import StudyPreferences from '../components/StudyPreferences'
 import { analyzeJob, extractJobDescriptionInformation, extractResume, extractResumeInformation } from '../services/api'
 import { analysisSchema, getValidationErrors } from '../validation/analysisSchema'
-import { useAuth } from '../context/AuthContext'
 
 export default function Analyze() {
   const navigate = useNavigate()
-  const { user, loginWithGoogle } = useAuth()
   const [resume, setResume] = useState(null)
   const [jobDescription, setJobDescription] = useState('')
   const [targetRole, setTargetRole] = useState('')
@@ -35,25 +33,37 @@ export default function Analyze() {
     setError('')
     setLoading(true)
     try {
-      if (!user) await loginWithGoogle()
       let resumeData
       try {
         ({ data: resumeData } = await extractResume(resume))
       } catch (requestError) {
-        setError(requestError.response?.data?.message || 'Unable to extract text from this resume. Please upload a text-based PDF or DOCX file.')
+        setError(requestError.response?.data?.message || 'File upload or resume extraction failed. Check that the backend is running and try again.')
         return
       }
       setError('')
+      let resumeInformation
+      try {
+        ({ data: resumeInformation } = await extractResumeInformation(resumeData.text))
+      } catch (requestError) {
+        setError(requestError.response?.data?.message || 'Resume text was extracted, but resume AI extraction failed.')
+        return
+      }
+      let jobDescriptionInformation
+      try {
+        ({ data: jobDescriptionInformation } = await extractJobDescriptionInformation(jobDescription.trim()))
+      } catch (requestError) {
+        setError(requestError.response?.data?.message || 'Job description AI extraction failed.')
+        return
+      }
       let analysisData
       try {
-        const [{ data: resumeInformation }, { data: jobDescriptionInformation }] = await Promise.all([extractResumeInformation(resumeData.text), extractJobDescriptionInformation(jobDescription.trim())])
         const saved = await analyzeJob({ resume: resumeData, resumeInformation, jobDescriptionInformation, jobDescription: jobDescription.trim(), targetRole: targetRole.trim(), availableDays: validation.data.availableDays, hoursPerDay: validation.data.hoursPerDay })
         analysisData = saved.data
       } catch (requestError) {
-        setError(requestError.response?.data?.message || 'Resume extracted, but the analysis could not be saved.')
+        setError(requestError.response?.data?.message || 'Extraction succeeded, but saving the analysis to MongoDB failed.')
         return
       }
-      navigate(`/results/${analysisData.analysisId}`)
+      navigate(`/results/${analysisData.analysisId}`, { state: { analysisData } })
     } catch (requestError) {
       const responseMessage = requestError.response?.data?.message
       setError(responseMessage || (requestError.response ? 'The server could not save this analysis.' : 'The backend is unavailable. Please try again.'))

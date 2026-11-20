@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 
 export default function GoogleAuthButton() {
   const { loginWithGoogle, configured } = useAuth()
@@ -10,5 +10,5 @@ export default function GoogleAuthButton() {
       setError(loginError.code === 'auth/popup-closed-by-user' ? 'Google sign-in was cancelled.' : 'Google sign-in could not be completed.')
     }
   }
-  return <div><button type="button" className="secondary-button w-full" onClick={handleLogin}><span className="font-bold text-cyan-300">G</span> Continue with Google</button>{error && <p className="error-text">{error}</p>}</div>
+  return <div><button type="button" className="secondary-button w-full" onClick={handleLogin}><span className="font-bold text-cyan-300">G</span> Sign in with Google</button>{error && <p className="error-text">{error}</p>}</div>
 }

@@ -2,9 +2,30 @@ import axios from 'axios'
 import { auth } from '../config/firebase'
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000' })
+
+const GUEST_ID_KEY = 'skill-gap-guest-id'
+
+function getGuestId() {
+  let guestId = window.localStorage.getItem(GUEST_ID_KEY)
+  if (!guestId) {
+    guestId = window.crypto.randomUUID()
+    window.localStorage.setItem(GUEST_ID_KEY, guestId)
+  }
+  return guestId
+}
+
 api.interceptors.request.use(async (config) => {
-  if (auth.currentUser) config.headers.Authorization = `Bearer ${await auth.currentUser.getIdToken()}`
+  if (auth.currentUser) {
+    config.headers.Authorization = `Bearer ${await auth.currentUser.getIdToken()}`
+  } else {
+    config.headers['X-Guest-ID'] = getGuestId()
+  }
   return config
+})
+api.interceptors.response.use((response) => {
+  const guestId = response.headers['x-guest-id']
+  if (guestId) window.localStorage.setItem(GUEST_ID_KEY, guestId)
+  return response
 })
 
 export async function analyzeJob(payload) {

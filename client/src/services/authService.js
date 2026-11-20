@@ -1,8 +1,8 @@
-import { signInWithRedirect, signOut } from 'firebase/auth'
+import { signInWithPopup, signOut } from 'firebase/auth'
 import { auth, googleProvider } from '../config/firebase'
 
 export async function signInWithGoogle() {
-  return signInWithRedirect(auth, googleProvider)
+  return signInWithPopup(auth, googleProvider)
 }
 
 export function signOutUser() {

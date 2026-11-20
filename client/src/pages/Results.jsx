@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { getAnalysisById } from '../services/api'
 
@@ -11,13 +11,15 @@ function List({ title, items }) {
 
 export default function Results() {
   const { id } = useParams()
-  const [analysis, setAnalysis] = useState(null)
+  const location = useLocation()
+  const [analysis, setAnalysis] = useState(location.state?.analysisData || null)
   const [error, setError] = useState('')
   const [showResumeText, setShowResumeText] = useState(false)
 
   useEffect(() => {
+    if (location.state?.analysisData) return
     getAnalysisById(id).then((response) => setAnalysis(response.data)).catch((requestError) => setError(requestError.response?.data?.message || 'Unable to load this analysis. Please try again.'))
-  }, [id])
+  }, [id, location.state])
 
   if (error) return <><Navbar /><main className="mx-auto max-w-3xl px-5 py-20 text-center"><h1 className="page-title">{error}</h1><Link to="/analyze" className="secondary-button mt-8">Back to Analyze</Link></main></>
   if (!analysis) return <><Navbar /><main className="mx-auto max-w-3xl px-5 py-20 text-center"><p className="page-copy mx-auto">Loading analysis...</p></main></>

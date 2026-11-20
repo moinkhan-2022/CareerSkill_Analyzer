@@ -10,8 +10,19 @@ async function extract(req, res, next, inputSchema, service, message) {
     const data = await service(parsed.data.text)
     return res.json({ success: true, message, data })
   } catch (error) {
-    if (error.code === 'MISSING_AI_KEY') return res.status(503).json({ success: false, message: 'AI extraction is not configured on the server.' })
-    if (error.code === 'INVALID_AI_OUTPUT') return res.status(502).json({ success: false, message: 'Failed to extract structured information.' })
+    const responses = {
+      MISSING_AI_KEY: [503, 'AI extraction is not configured. Add GEMINI_API_KEY on the server.'],
+      INVALID_AI_OUTPUT: [502, 'Gemini returned invalid structured data. Please retry the AI extraction.'],
+      AI_SERVICE_UNAVAILABLE: [503, 'Gemini is temporarily unavailable. Please try again in a moment.'],
+      AI_RATE_LIMITED: [429, 'Gemini rate limit reached. Wait briefly and try again.'],
+      AI_MODEL_NOT_FOUND: [503, 'The configured Gemini model is unavailable. Check GEMINI_MODEL on the server.'],
+      AI_AUTH_FAILED: [503, 'Gemini authentication failed. Check the server API key configuration.'],
+      AI_NETWORK_ERROR: [503, 'The server could not reach Gemini. Check the server network connection.'],
+    }
+    if (responses[error.code]) {
+      const [status, responseMessage] = responses[error.code]
+      return res.status(status).json({ success: false, stage: 'ai_extraction', code: error.code, message: responseMessage })
+    }
     console.error('AI extraction failed:', error.message)
     return next(error)
   }
